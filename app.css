@@ -1,0 +1,37 @@
+div{
+  font-family: arial;
+  font-size: 24px;
+  color: lightblue;
+  text-align: center;
+  }
+
+h1{
+  font-size: 36px;
+  color : black;
+  }
+
+.first{
+  height: 160px;
+  font-size : 32px;
+  text-align : center;
+  background-color: gray;
+  color: white;
+  }
+
+.minor{
+  font-family: arial;
+  font-size: 16px;
+  height: 16px;
+  color: white;
+  }
+
+.mail{
+  font-family: arial;
+  font-size: 16px;
+  height: 16px;
+  color: lightblue;
+  }
+
+a{
+  text-decoration: none;
+  }
