@@ -1,7 +1,6 @@
 
 $(document).ready(function(){
-	$('.intro').hide(),
-	$('#empty_intro').show();
+	$('.intro').hide();
 });
 
 $(document).ready(function(){
