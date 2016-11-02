@@ -39,7 +39,7 @@ nav{
 .area{
   display: inline-block;
   position: relative;
-  background-color: red;
+  background-color: rgba(1, 1, 1, 0);
   width: 70px;
   height: 70px;
 }
