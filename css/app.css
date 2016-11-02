@@ -1,0 +1,83 @@
+<style type="text/css">
+* {
+    font-family: "Noto Sans", "Noto Sans CJK TC", "Microsoft JhengHei",
+                 "sans-serif";
+}
+
+#Header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 100%;
+    background-color: rgba(0, 128, 255, 0.7);
+    padding-top: 30px;
+    padding-left: 20px;
+    color: white;
+    text-shadow: 1px 1px 2px #000000;
+    font-size: 26px;
+}
+
+#Body {
+    margin-top: 100px;
+    padding: 20px;
+}
+
+#Show {
+    width: 100%;
+    height: 300px;
+}
+
+#About_us {
+    padding-top: 50px;
+    width: 100%;
+    height: 300px;
+}
+
+.container {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    justify-content: center;
+}
+
+.content {
+    margin-left: 200px;
+    font-size: 24px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    padding-top: 18px;
+}
+.medium_picture > img {
+    width: 450px;
+    height: 300px;
+}
+
+.circle_text_picture {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+}
+
+.circle_text_picture > img {
+    width: 300px;
+    height: 200px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+}
+
+.circle_text_picture > ul > li {
+    font-size: 18px;
+    padding-left:10px;
+}
