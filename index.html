@@ -3,44 +3,68 @@
 <head>
 
 <link rel='stylesheet' type='text/css' href='app.css'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type='text/javascript' src='app.js'></script>
 
 </head>
 <body>
 
-<h1>Hello World.</h1>
-
-<div class='first'> 
-  Shau-Hung Lin
-  <p class='mail'> johnny60508@gmail.com </p>
-  <pre class='minor'> senior in NCKU CSIE </pre>
+<div id='head_container'>
+	<h1>Online DownStair</h1>
 </div>
 
-<div> 
-  <a target="_blank" title="github_icon" href="https://github.com/biphenyl">
-    <img src='/wp2016/img/github-icon-40x40.png' alt='github icon' style='width:40px;height:40px'>
-  </a>
-  github: biphenyl
+<div id='nav_container'> 
+  <nav>
+	<a id = 'menu_first' class='menu'> The game </a>
+	<a class='menu'> How to play </a>
+	<a class='menu'> About us </a>
+	</nav>
 </div>
 
-<div>
-  <a target="_blank" title="Facebook" href="https://www.facebook.com/100001496008324">
-    <img alt="facebook" src="//login.create.net/images/icons/user/facebook_40x40.png" border=0>
-  </a> 
-  facebook: 林紹弘
+<div id='explain_container'>
+	<p id='explain'> Move mouse to those little people! </p>
 </div>
 
-<div>
-  <a target='_blank' title='steam icon' href='http://steamcommunity.com/profiles/76561198089070053'>
-    <img src='/wp2016/img/steam-icon-40x40.png' alt='steam icon' style='width:40px;height:40px'>
-  </a>
-  steam ID: Biphenyl 
+<div id='img_container'> 
+  <img src='img/DownStair.png' alt='github icon' style='width:650px height:530px'>
+</div>
+	
+<div id='area_container'>
+	<div id='area_1' class = 'area'></div>
+	<div id='area_2' class = 'area'></div>
+	<div id='area_3' class = 'area'></div>
+	<div id='area_4' class = 'area'></div>
 </div>
 
-<div> 
-  <a target='_blank' title='overwatch icon' href='https://playoverwatch.com/zh-tw/career/pc/us/MoreGreen-3759'>
-    <img src='/wp2016/img/overwatch-icon-40x40.png' alt='overwatch icon' style='width:40px;height:34px'>
-  </a>
-  battle tag: Moregreen#3759
+<div id='intro_container'>
+	<div id = 'empty_intro' class='intro'>
+	<div id='intro_1' class='intro'>
+		<img class='pic' src='img/林紹弘.jpg' width='250px' height='200px'>
+		<div class = 'word'> 
+			<p>林紹弘</p>
+			<p>資訊系四年級</p>
+	</div></div><div id='intro_2' class='intro'>
+		<img class='pic' src='img/吳欣燁.jpg' width='250px' height='200px'>
+		<div class = 'word'> 
+			<p>吳欣燁</p>
+			<p>資訊系四年級</p>
+	</div></div><div id='intro_3' class='intro'>
+		<img class='pic' src='img/許晉愷.jpg' width='250px' height='200px'>
+		<div class = 'word'> 
+			<p>許晉愷</p>
+			<p>資管所一年級</p>
+	</div></div><div id='intro_4' class='intro'>
+		<img class='pic' src='img/黃昱瑋.jpg' width='250px' height='200px'>
+		<div class = 'word'> 
+			<p>黃昱瑋</p>
+			<p>電機系三年級</p>
+	</div></div>
+</div>
+
+<div id='foot_container'>
+	<div id='foot'>
+		nothing to write here now.
+	</div>
 </div>
 
 </body>
