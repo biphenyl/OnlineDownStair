@@ -295,5 +295,6 @@ function reviveCount()
 
         game.time.events.remove(reviveEvent);
         scoreText.text = "score: 0";
+        score = 0;
     }
 }
