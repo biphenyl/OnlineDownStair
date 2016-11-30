@@ -2,7 +2,10 @@
 var gameWidth = 2000;
 var gameHeight = 800;
 
-var game = new Phaser.Game($(window).width(), gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var platformWidth = 300;
+var platformHeight = 64;
+
+var game = new Phaser.Game($(window).width(), gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update , render: render});
 
 function preload() {
 
@@ -25,6 +28,8 @@ var score = 0;
 var scoreText;
 var idText;
 var lastPlatformX = 0;
+var reviveCounter = -1;
+var reviveEvent;
 
 function create() {
 
@@ -162,14 +167,44 @@ function update() {
         player.body.velocity.y = -350;
     }
 
-    idText.x = player.x - 8;
-    idText.y = player.y - 16;
-
+    //Let ID follow player
+    if(player.alive)
+    {
+        idText.x = player.x - 8;
+        idText.y = player.y - 16;
+    }
+    
+    // Let scoreText always at left-top
     scoreText.x = game.camera.x + 16;
     scoreText.y = game.camera.y + 16;
+      
 
+    platforms.forEach(function(item)
+    {
+        if(item.top <= -64)
+            platforms.remove(item);
+    })
+
+    //die event
+    if((player.y+32 > gameHeight) && player.alive)
+     {  
+        player.kill();
+        console.log("he die~");
+        scoreText.text = "Revive in 3 sec";
+
+        //make id invisable
+        idText.x = -100;
+        idText.y = -100;
+
+        reviveEvent = game.time.events.loop(Phaser.Timer.SECOND * 1, reviveCount, this);
+        reviveCounter = 3;
+    }
 }
 
+function render()
+{
+    //game.debug.spriteCoords(player, 32, 500);
+}
 /*
 function collectStar (player, star) {
     
@@ -179,6 +214,8 @@ function collectStar (player, star) {
     //  Add and update the score
     score += 10;
     scoreText.text = 'Score: ' + score;
+
+
 
 }
 */
@@ -191,12 +228,11 @@ function standOnPlatform(player, platform)
 {
     if(player.y + player.body.height == platform.y)
     {
-        score += 10;
-        scoreText.text = "score:" + score;
+        score += 1;
+        scoreText.text = "score: " + score;
         
     }
 
-    player.body.velocity.y = 0;
 }
 
 function createNewPlatform()
@@ -213,17 +249,7 @@ function createNewPlatform()
 
 function showNewSize()
 {
-    platforms.forEach(function(item)
-    {
-        if(item.top <= -64)
-            platforms.remove(item);
-    })
-
-    if(player.body.y > gameHeight)
-     {  
-        player.kill();
-        console.log("he die~");
-    }
+    
 }
 
 function mainLoop()
@@ -254,4 +280,20 @@ function drawBound()
 {
     graphics.lineStyle(2, 0x0000FF, 1);
     graphics.drawRect(0, 0, gameWidth, gameHeight);
+}
+
+function reviveCount()
+{
+    reviveCounter -= 1;
+    scoreText.text = "Revive in " + reviveCounter + " sec";
+
+    if(reviveCounter == 0)
+    {
+        player.revive();
+        player.x = lastPlatformX + 150;
+        player.y = 300;
+
+        game.time.events.remove(reviveEvent);
+        scoreText.text = "score: 0";
+    }
 }
