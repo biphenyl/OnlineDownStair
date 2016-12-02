@@ -6,6 +6,7 @@ const platformWidth = 300;
 const platformHeight = 64;
 const platformUpSpeed = -120;
 
+const playerHeight = 32;
 const playerSpeedX = 200;
 const playerGravity = 400;
 
@@ -279,13 +280,13 @@ function update() {
             player.y = 0;
             player.body.velocity.y = 0;
         }
-        if(player.body.x < 0)
+        if(player.body.left < 0)
         {
             player.x = 0;
             player.body.velocity.x = 0;
         }
 
-        if(player.body.x > gameWidth-player.width)
+        if(player.body.right > gameWidth)
         {
             player.x = gameWidth - player.width;
             player.body.velocity.x = 0;
@@ -303,6 +304,7 @@ function update() {
             platforms.remove(item);
     })
 
+
     //die event
     for(i=0; i<playerCount; i++)
     {
@@ -319,6 +321,8 @@ function update() {
             characters[i].nameText.x = -100;
             characters[i].nameText.y = -100;
 
+
+
             // send message to server
             //let server handle the life and death
 
@@ -327,6 +331,8 @@ function update() {
                 scoreText.text = "Revive in 3 sec";
                 reviveEvent = game.time.events.loop(Phaser.Timer.SECOND * 1, reviveCount, this);
                 reviveCounter = 3;
+
+                game.camera.unfollow();
             }
             else
             {
@@ -418,6 +424,7 @@ function reviveCount()
     scoreText.text = "Revive in " + reviveCounter + " sec";
 
     player = characters[userID].player;
+
     if(reviveCounter == 0)
     {
         player.revive();
@@ -433,10 +440,10 @@ function reviveCount()
             game.camera.x = gameWidth - windowWidth;
 
         */
-        //console.log("x is " + player.x + " camera at " + game.camera.x);
-
         game.time.events.remove(reviveEvent);
         scoreText.text = "score: 0";
+
+        game.camera.follow(characters[userID].player, Phaser.Camera.FOLLOW_LOCKON, 0.05, 0.1);
     }
 }
 
