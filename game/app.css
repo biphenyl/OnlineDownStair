@@ -1,11 +1,15 @@
-/*phaser use tag canvas to contain the game*/
-canvas
-{
-	/*margin-left: 200px;*/
+body {
+  background-color: #DADADA;
 }
-
-body
-{
-	background-image: url("assets/background/outer.png");
-	background-size: 100%;
+body > .grid {
+  height: 100%
+}
+.column {
+  max-width: 450px;
+}
+#output {
+  width: 100%;
+  max-height: 30px;
+  font-size: 24px;
+  text-align: center;
 }
