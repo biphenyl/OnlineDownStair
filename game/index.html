@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>TEST</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>    
+    <script type="text/javascript" src="js/phaser.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="shareData.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body>
+    <div class='ui middle aligned center aligned grid' id='login'>
+      <div class='column'>
+        <h2 class='ui teal image header'>
+          <div class='content'>
+            輸入你的暱稱
+          </div>
+        </h2>
+        <form class='ui large form'>
+          <div class='ui stacked segment'>
+            <div class='field'>
+              <div class='ui left icon input'>
+                <i class='user icon'></i>
+                <input type='text' id='username'>
+              </div>
+            </div>
+            <div class='ui fluid large teal submit button' id='sendid'>登入</div>
+          </div>
+          <div class='ui message'>
+            <div class='header'>如無法登入，請按F5重整頁面</div>
+          </div>
+          <div class='ui message' id='maxPlayer'>
+            <div class='header'>人數已達上限</div>
+          </div>
+          <div class="ui error message" id='errorMsg'>
+            <div class='header'>輸入格式錯誤</div>
+            <ul class="list">
+              <li>名稱長度必須小於10</li>
+              <li>名稱長度需大於0</li>
+              <li>不能有空格</li>
+            </ul>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class='ui middle aligned center aligned grid' id='room'>
+      <div class='ui segment' id='output'></div>
+      <script type="text/javascript" src="window.js"></script>
+    </div>
+  </body>
+</html>
+
