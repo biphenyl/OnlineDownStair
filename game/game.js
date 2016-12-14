@@ -38,7 +38,7 @@ function preload() {
     game.load.spritesheet('dude1', 'assets/guys/guy1.png', 32, 48);
     game.load.spritesheet('dude2', 'assets/guys/guy2.png', 32, 48);
 
-    game.load.spritesheet('hp', 'assets/HP/hpBar.png', 32, 10);
+    game.load.spritesheet('hp', 'assets/HP/hpBar2.png', 32, 10);
 
 
 }
@@ -101,6 +101,7 @@ function character(newID, newName, posX, posY)
     this.face = 0;
 
     // status of character, -1 as flying(not on platform), and postive number is which platform this character stand on
+    this.spikeState = 0;
     this.status = 0;
     this.keyState = 0;
     this.uuid = 0;
@@ -321,10 +322,26 @@ function update() {
             player.y = upBound;
             player.body.velocity.y = 0;
 
-            if(--characters[i].hp <= 0 && characters[i].player.alive)
-                playerDie(i);
+            // hurt detection
+            if(characters[i].name != "._______.")
+            {
+                if(characters[i].spikeState==0)
+                {
+                    characters[i].hp-=3;
+                    characters[i].spikeState = 1
+                    console.log("hurt by top spike!");
+                }
+                
+                if(characters[i].hp <= 0 && characters[i].player.alive )
+                {
+                    playerDie(i);
+                }
+            }
             
         }
+        else if(characters[i].spikeState == 1)
+            characters[i].spikeState = 0;
+        
         if(player.body.left < 0)
         {
             player.x = 0;
@@ -457,7 +474,8 @@ function standOnPlatform(player, platform)
         {
             if(platformID != characters[i].status)
             {
-                characters[counter].hp -= 3;
+                if(characters[i].name!="._______.")
+                    characters[counter].hp -= 3;
                 if(characters[counter].hp <= 0 && characters[i].player.alive)
                     playerDie(counter);   
             }
@@ -606,9 +624,11 @@ function playerDie(playerID)
     characters[playerID].nameText.x = -100;
     characters[playerID].nameText.y = -100;
 
-    characters[i].hp = 10;
-    characters[i].score = 0;
-    scoreText.text = "Score: 0";
+    characters[playerID].hp = 10;
+    characters[playerID].score = 0;
+    if(playerID == userID)
+        scoreText.text = "Score: 0";
+    
     characters[playerID].player.x = lastPlatformX + 150;
     characters[playerID].player.y = 300;
     characters[playerID].player.body.velocity.y = 0;
