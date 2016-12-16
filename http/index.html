@@ -9,7 +9,8 @@
   <body>
     <form action="do.njs" method="GET">
       學號 : <br>
-      <input type="text" name="id" id="number"><br>
+      <input type="text" name="id1" id="number1"><br>
+      <input type="text" name="id2" id="number2"><br>
       <input type="submit" value="查詢">
     </form>
     <br>
@@ -21,7 +22,8 @@
         $.ajax( {
           url: "do.njs",
           data: {
-            id: $("#number").val(),
+            id1: $("#number1").val(),
+            id2: $("#number2").val(),
           },
           success: function(r) {
             $("span").html(r);
