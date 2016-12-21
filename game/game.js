@@ -1,9 +1,13 @@
 $(document).ready(function(){
-
+/*
+document.addEventListener('touchstart', onTouchStart, false);
+//document.addEventListener('touchmove', onTouchMove, false);
+document.addEventListener('touchend', onTouchEnd, false);
+*/
 const gameWidth = 2000;
 const gameHeight = 600;
 
-const upBound = 30;
+const upBound = 25;
 const leftBound = 0;
 const rightBound = 2000;
 
@@ -18,9 +22,9 @@ const playerGravity = 400;
 
 const maxHp = 10;
 
+var touchOn = false;
 var windowWidth = $(window).width();
 var game = new Phaser.Game(windowWidth, gameHeight, Phaser.AUTO, 'room', { preload: preload, create: create, update: update , render: render});
-    
 
 function preload() {
 
@@ -44,12 +48,12 @@ function preload() {
 }
 
 var userID;
-var playerCount = 20;
+var playerCount = 200;
 
 // characters is our array store our data(hp, score...etc), players is a phaser group that do physic thing
-var characters = new Array(20);
+var characters = new Array(200);
 var players;
-var localPlayerList = new Array(20).fill(false);
+var localPlayerList = new Array(200).fill(false);
 
 
 // stairs is our array store our data(type), platforms is a phaser group that do physic thing
@@ -246,26 +250,31 @@ function update() {
     players.forEach(function(item){
         item.body.velocity.x = 0;
     })
-    if (cursors.left.isDown)
+
+    if(cursors.left.isDown)
+        characters[userID].keyState = -1;
+    else if(cursors.right.isDown)
+        characters[userID].keyState = 1;
+    else if(!touchOn)
+        characters[userID].keyState = 0;
+
+    if (characters[userID].keyState == -1)
     {
         //  Move to the left
         characters[userID].player.body.velocity.x = -playerSpeedX;
-        characters[userID].keyState = -1;
         //characters[userID].player.animations.play('left');
     }
-    else if (cursors.right.isDown)
+    else if(characters[userID].keyState == 1)
     {
         //  Move to the right
         characters[userID].player.body.velocity.x = playerSpeedX;
-        characters[userID].keyState = 1;
         //characters[userID].player.animations.play('right');
     }
-    else
+    else if(characters[userID].keyState == 0)
     {
         //  Stand still
         characters[userID].player.animations.stop();
         characters[userID].player.frame = 4;
-        characters[userID].keyState = 0;
     }
     for(i=0; i<playerCount; i++)
     {
@@ -323,20 +332,18 @@ function update() {
             player.body.velocity.y = 0;
 
             // hurt detection
-            if(characters[i].name != "._______.")
+            if(characters[i].spikeState==0)
             {
-                if(characters[i].spikeState==0)
-                {
-                    characters[i].hp-=3;
-                    characters[i].spikeState = 1
-                    console.log("hurt by top spike!");
-                }
-                
-                if(characters[i].hp <= 0 && characters[i].player.alive )
-                {
-                    playerDie(i);
-                }
+                characters[i].hp-=3;
+                characters[i].spikeState = 1
+                console.log("hurt by top spike!");
             }
+            
+            if(characters[i].hp <= 0 && characters[i].player.alive )
+            {
+                playerDie(i);
+            }
+            
             
         }
         else if(characters[i].spikeState == 1)
@@ -424,7 +431,6 @@ function update() {
 
     if(playerList[userID] == true)
         localToSent(userID);
-
     
     if(lastKeyStatus != characters[userID].keyState)
     {
@@ -436,7 +442,7 @@ function update() {
 
 function render()
 {
-    //game.debug.spriteCoords(player, 32, 500);
+
 }
 
 $(window).resize(function(){
@@ -444,6 +450,33 @@ $(window).resize(function(){
     game.scale.setGameSize(windowWidth, gameHeight);
 });
 
+/*
+function onTouchStart(event)
+{
+    event.preventDefault();
+    if(event.pageX < windowWidth/2)
+        characters[userID].keyState = -1;
+    else if(event.pageX >= windowWidth/2)
+        characters[userID].keyState = 1;
+
+}
+
+
+function onTouchMove(event)
+{
+    event.preventDefault();
+    if(event.changedTouches[0].pageX < windowWidth/2)
+        characters[userID].keyState = -1;
+    else if(event.changedTouches[0].pageX >= windowWidth/2)
+        characters[userID].keyState = 1; 
+}
+
+function onTouchEnd(event)
+{
+    event.preventDefault();
+    characters[userID].keyState = 0; 
+}
+*/
 function standOnPlatform(player, platform)
 {
     //should count your own
@@ -474,8 +507,7 @@ function standOnPlatform(player, platform)
         {
             if(platformID != characters[i].status)
             {
-                if(characters[i].name!="._______.")
-                    characters[counter].hp -= 3;
+                characters[counter].hp -= 3;
                 if(characters[counter].hp <= 0 && characters[i].player.alive)
                     playerDie(counter);   
             }
@@ -614,6 +646,7 @@ function reviveCount()
 
 function playerDie(playerID)
 {
+    // kill part
     player = characters[playerID].player;
     player.y = gameHeight;
     player.kill();
@@ -624,6 +657,7 @@ function playerDie(playerID)
     characters[playerID].nameText.x = -100;
     characters[playerID].nameText.y = -100;
 
+    // revive part
     characters[playerID].hp = 10;
     characters[playerID].score = 0;
     if(playerID == userID)
@@ -634,34 +668,9 @@ function playerDie(playerID)
     characters[playerID].player.body.velocity.y = 0;
 
     player.revive();
-    // send message to server
-    //let server handle the life and death
-
-    /*if(i==userID)
-    {
-        characters[i].hp = 10;
-        characters[i].score = 0;
-        scoreText.text = "Revive in 3 sec...";
-        reviveEvent = game.time.events.loop(Phaser.Timer.SECOND * 1, reviveCount, this);
-        reviveCounter = 3;
-
-        hpBar.x = -100;
-        hpBar.y = -100;
-
-        game.camera.unfollow();
-    }
-    else
-    {
-        player.revive();
-        characters[i].hp = 10;
-        player.x = lastPlatformX + 150;
-        player.y = 300;
-        player.body.velocity.y = 0;
-
-    }*/
-        
     
 }
+
 /* PLAYER JOIN AND LEAVE */
 
 function playerJoin(newPlayerID)
@@ -689,9 +698,9 @@ function playerLeave(leavePlayerID)
 {
     console.log(leavePlayerID + " is leaving");
     
+    // remove form players group and characters array
     players.remove(characters[leavePlayerID].player);
     characters[leavePlayerID].nameText.destroy();
-
 
     localPlayerList[leavePlayerID] = false;
 }
@@ -705,8 +714,6 @@ function initPlayer(player)
 
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
-
-    //player.body.maxVelocity = new Phaser.Point(200,300);
 }
 
 function initPlatform(platform)
@@ -717,7 +724,8 @@ function initPlatform(platform)
 
 function avoidStack(player1, player2)
 {
-
+    // use to saperate two player object away, 
+    // basically very annoying and complex algorithm, don't need to dig in it
     x11 = player1.left;
     x12 = player1.right;
     x21 = player2.left;
@@ -803,7 +811,7 @@ function avoidStack(player1, player2)
 
 function localToSent(ltsID)
 {
-    //sCharacter = 
+    // pass characters data from game.js to shareData.js
     sentCharacters[ltsID].x = characters[ltsID].player.x;
     sentCharacters[ltsID].y = characters[ltsID].player.y;
 
@@ -820,7 +828,7 @@ function localToSent(ltsID)
 
 function sentToLocal(stlID)
 {
-    
+    // pass characters from shareData.js/app.js to game.js
     
     offset = 6;
     if(game.math.difference(sentCharacters[stlID].x, characters[stlID].player.x) > offset)
