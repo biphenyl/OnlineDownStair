@@ -16,3 +16,6 @@ body > .grid {
   font-size: 24px;
   text-align: center;
 }
+#room {
+  width: 100%;
+}

@@ -68,10 +68,11 @@ function iAmDead() {
 }
 
 $(document).ready(function() {
+  $('#refresh').hide();
+  $('#maxPlayer').hide();
   $('#errorMsg').hide();
   $('#room').hide();
   $('#output').hide();
-  $('#maxPlayer').hide();
   socket.on('connect', function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
@@ -194,8 +195,10 @@ $(document).ready(function() {
   socket.on('serverCheck', function() {
     var time = new Date().getTime();  
     if (my.login == 1) {
-      if ((time - my.time) > 20000) {
+      if ((time - my.time) > 5000) {
         socket.emit('timeout');
+        $('#room').hide();
+        $('#refresh').show();
       } 
     }
   });

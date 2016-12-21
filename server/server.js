@@ -121,7 +121,7 @@ every_s('5s').do(function() {
   io.in('game').emit('serverSync');
 });
 // timeout cycle
-every_t('20s').do(function() {
+every_t('5s').do(function() {
   io.in('game').emit('serverCheck');
 });
 // new platform cycle
