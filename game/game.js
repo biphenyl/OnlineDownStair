@@ -48,12 +48,12 @@ function preload() {
 }
 
 var userID;
-var playerCount = 200;
+var playerCount = 20;
 
 // characters is our array store our data(hp, score...etc), players is a phaser group that do physic thing
-var characters = new Array(200);
+var characters = new Array(20);
 var players;
-var localPlayerList = new Array(200).fill(false);
+var localPlayerList = new Array(20).fill(false);
 
 
 // stairs is our array store our data(type), platforms is a phaser group that do physic thing
@@ -205,6 +205,7 @@ function create() {
     }
 
     var topSpike = game.add.sprite(0, 0, 'topSpike');
+
 }
 
 function update() {
