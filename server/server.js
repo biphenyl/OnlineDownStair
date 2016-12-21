@@ -2,6 +2,7 @@
 
 var every_s = require('schedule').every;
 var every_p = require('schedule').every;
+var every_t = require('schedule').every;
 var express = require('express');
 var app = require('express')();
 var server = require('http').createServer(app);
@@ -9,9 +10,9 @@ var io = require('socket.io').listen(server);
 server.listen(3159);
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile('../game/' + 'index.html');
 });
-app.use(express.static(__dirname));
+app.use(express.static('../game/'));
 var MAX_PLAYER = 20;
 var MAX_X = 1700;
 var MAX_TYPE = 5;
@@ -52,21 +53,22 @@ io.on('connection', function(socket) {
   // login
   socket.on('login', function(name) {
     maxp += 1;
-    //if (maxp >= 5) {
-      //socket.emit('maxPlayer');
-    //}
-    var i = getID();
-    console.log(name + '[' + i + '] login');
-    socket.username = name;
-    socket.userid = i;
-    socket.emit('addMe', {
-      newId: i,
-      newName: name
-    });
-    socket.broadcast.emit('addUser', {
-      newId: i,
-      newName: name
-    });
+    if (maxp >= MAX_PLAYER) {
+      socket.emit('maxPlayer');
+    }else {
+      var i = getID();
+      console.log(name + '[' + i + '] login');
+      socket.username = name;
+      socket.userid = i;
+      socket.emit('addMe', {
+        newId: i,
+        newName: name
+      });
+      socket.broadcast.emit('addUser', {
+        newId: i,
+        newName: name
+      });
+    }
   });
   // join the game
   socket.on('room', function() {
@@ -99,6 +101,10 @@ io.on('connection', function(socket) {
       y: data.y
     });
   });
+  // timeout
+  socket.on('timeout', function() {
+    socket.disconnect();
+  });
   // logout
   socket.on('disconnect', function() {
     socket.broadcast.to('game').emit('leave', {
@@ -111,8 +117,12 @@ io.on('connection', function(socket) {
   });
 });
 // sync cycle
-every_s('300ms').do(function() {
+every_s('5s').do(function() {
   io.in('game').emit('serverSync');
+});
+// timeout cycle
+every_t('20s').do(function() {
+  io.in('game').emit('serverCheck');
 });
 // new platform cycle
 every_p('800ms').do(function() {

@@ -1,23 +1,7 @@
 var socket = io.connect('http://luffy.ee.ncku.edu.tw:3159', {
   'force new connection': true
-//  reconnection: true,
-//  reconnectionDelay: 1000,
-//  reconnectionDelayMax : 5000,
-//  reconnectionAttempts: Infinity
 });
 var intervalID;
-/*
-$(document).ready(function(){
-  intervalID = setInterval(function(){
-    if (socket.connected === false && socket.connecting === false) 
-    {
-          // use a connect() or reconnect() here if you want
-        socket.reconnect();
-        console.log("try to reconnect");
-    }
-    console.log("interval triggerd");
-  }, 1000);
-})*/
 var MAX_PLAYER = 20;
 
 var my = {
@@ -31,7 +15,9 @@ var my = {
   score: 0,
   face: -1,
   keyState: 0,
-  uuid: 0
+  uuid: 0,
+  time: 0,
+  login: 0
 };
 var newPlatform = {
   x: 0,
@@ -45,6 +31,7 @@ function posUpdate(obj) {
   // x, y, vx, vy, keyState
   var uuid = new Date().getTime();
   my.uuid = uuid;
+  my.time = uuid;
   socket.emit('sendAll', {
     name: sentCharacters[my.id].name,
     otherId: my.id,
@@ -85,9 +72,6 @@ $(document).ready(function() {
   $('#room').hide();
   $('#output').hide();
   $('#maxPlayer').hide();
-  // connect the socket
-  socket.disconnect();
-  socket.connect();
   socket.on('connect', function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
@@ -115,9 +99,9 @@ $(document).ready(function() {
     }
   });
   // max player
-  //socket.on('maxPlayer', function() {
-  //  $('#maxPlayer').show();
-  //});
+  socket.on('maxPlayer', function() {
+    $('#maxPlayer').show();
+  });
   // login
   socket.on('addMe', function(obj) {
     // newId, newName
@@ -131,6 +115,9 @@ $(document).ready(function() {
     sentCharacters[my.id] = new sentCharacter();
     sentCharacters[my.id].name = obj.newName;
     playerList[my.id] = true;
+    my.login = 1;
+    var time = new Date().getTime();
+    my.time = time;
     socket.emit('room');
   });
   // add other user
@@ -202,6 +189,15 @@ $(document).ready(function() {
       keyState: sentCharacters[my.id].keyState,
       uuid: my.uuid
     });
+  });
+  // check timeout
+  socket.on('serverCheck', function() {
+    var time = new Date().getTime();  
+    if (my.login == 1) {
+      if ((time - my.time) > 20000) {
+        socket.emit('timeout');
+      } 
+    }
   });
   // server update platform
   socket.on('serverNewPlatform', function(obj) {
