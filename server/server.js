@@ -1,5 +1,6 @@
 #!/usr/local/bin/node
 
+var every_c = require('schedule').every;
 var every_s = require('schedule').every;
 var every_p = require('schedule').every;
 var every_t = require('schedule').every;
@@ -7,7 +8,7 @@ var express = require('express');
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-server.listen(3159);
+server.listen(4395);
 
 app.get('/', function(req, res) {
   res.sendFile('../game/' + 'index.html');
@@ -105,6 +106,12 @@ io.on('connection', function(socket) {
   socket.on('timeout', function() {
     socket.disconnect();
   });
+  // clean
+  socket.on('clean', function() {
+    if (socket.userid === undefined || socket.username === undefined) {
+      socket.disconnect();
+    }
+  });
   // logout
   socket.on('disconnect', function() {
     socket.broadcast.to('game').emit('leave', {
@@ -112,9 +119,15 @@ io.on('connection', function(socket) {
       name: socket.username
     });
     id[socket.userid] = 0;
-    maxp -= 1;
+    if (maxp > 0) {
+      maxp -= 1;
+    }
     console.log(socket.username + '[' + socket.userid + '] logout');
   });
+});
+// clean cycle
+every_c('1s').do(function() {
+  io.in('game').emit('serverClean');
 });
 // sync cycle
 every_s('5s').do(function() {

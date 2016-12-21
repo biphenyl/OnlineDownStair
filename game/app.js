@@ -1,4 +1,4 @@
-var socket = io.connect('http://luffy.ee.ncku.edu.tw:3159', {
+var socket = io.connect('http://luffy.ee.ncku.edu.tw:4395', {
   'force new connection': true
 });
 var intervalID;
@@ -32,6 +32,7 @@ function posUpdate(obj) {
   var uuid = new Date().getTime();
   my.uuid = uuid;
   my.time = uuid;
+  my.keyState = sentCharacters[my.id].keyState;
   socket.emit('sendAll', {
     name: sentCharacters[my.id].name,
     otherId: my.id,
@@ -51,7 +52,7 @@ function iAmDead() {
   var uuid = new Date().getTime();
   my.uuid = uuid;
   my.hp = 0;
-  my.keyState = obj.keyState;
+  my.keyState = sentCharacters[my.id].keyState;
   socket.emit('sendAll', {
     name: sentCharacters[my.id].name,
     otherId: my.id,
@@ -112,7 +113,7 @@ $(document).ready(function() {
     my.name = obj.newName;
     $('#room').append('<script type="text/javascript" src="game.js"></script>');
  
-    console.log("iiiddd is " + my.id);
+    console.log("your id is " + my.id);
     sentCharacters[my.id] = new sentCharacter();
     sentCharacters[my.id].name = obj.newName;
     playerList[my.id] = true;
@@ -191,11 +192,15 @@ $(document).ready(function() {
       uuid: my.uuid
     });
   });
+  // clean zombie
+  socket.on('serverClean', function() {
+    socket.emit('clean');
+  });
   // check timeout
   socket.on('serverCheck', function() {
     var time = new Date().getTime();  
     if (my.login == 1) {
-      if ((time - my.time) > 5000) {
+      if ((time - my.time) > 5000 && sentCharacters[my.id].keyState == 0) {
         socket.emit('timeout');
         $('#room').hide();
         $('#refresh').show();
