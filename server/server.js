@@ -4,6 +4,7 @@ var every_c = require('schedule').every;
 var every_s = require('schedule').every;
 var every_p = require('schedule').every;
 var every_t = require('schedule').every;
+var fs = require('fs');
 var express = require('express');
 var app = require('express')();
 var server = require('http').createServer(app);
@@ -34,7 +35,11 @@ function getID() {
 
 io.on('connection', function(socket) {
   var clientIp = socket.request.connection.remoteAddress;
-  console.log('New connection from ' + clientIp);
+  var msg = 'New connection from ' + clientIp;
+  fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
+    if (err) throw err;
+    console.log(msg);
+  });
   // check username
   socket.on('login', function(name) {
     var flag = 0;
@@ -55,7 +60,11 @@ io.on('connection', function(socket) {
         socket.emit('maxPlayer');
       }else {
         var i = getID();
-        console.log(name + '[' + i + '] login');
+        var msg = name + '[' + i + '] login';
+        fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
+          if (err) throw err;
+          console.log(msg);
+        });
         socket.username = name;
         socket.userid = i;
         socket.emit('addMe', {
@@ -120,7 +129,11 @@ io.on('connection', function(socket) {
     if (maxp > 0) {
       maxp -= 1;
     }
-    console.log(socket.username + '[' + socket.userid + '] logout');
+    var msg = socket.username + '[' + socket.userid + '] logout';
+    fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
+      if (err) throw err;
+      console.log(msg);
+    });
   });
 });
 // clean cycle

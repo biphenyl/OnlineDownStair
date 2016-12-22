@@ -28,17 +28,17 @@
                 <input type='text' id='username' placeholder='Username'>
               </div>
             </div>
-            <div class='ui fluid large teal submit button' id='sendid'>登入</div>
+            <div class='ui fluid large teal submit button' id='sendid'>Login</div>
           </div>
           <div class='ui message' id='maxPlayer'>
-            <div class='header'>人數已達上限</div>
+            <div class='header'>Too many players online, please wait</div>
           </div>
           <div class="ui error message" id='errorMsg'>
-            <div class='header'>輸入格式錯誤</div>
+            <div class='header'>Invalid name</div>
             <ul class="list">
-              <li>名稱長度必須小於10</li>
-              <li>名稱長度需大於0</li>
-              <li>不能有空格</li>
+              <li>Length must less than 10</li>
+              <li>length must more than 0</li>
+              <li>Username can't contain space</li>
             </ul>
           </div>
         </form>
@@ -46,8 +46,8 @@
     </div>
     <div class='ui middle aligned center aligned grid' id='refresh'>
       <div class='column'>
-        <div class='ui message'>
-          <div class='header'>請重新整理頁面</div>
+        <div class='ui large message'>
+          <div class='header'>Idle too long, please refresh the page</div>
         </div>
       </div>
     </div>
