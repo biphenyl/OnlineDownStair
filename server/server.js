@@ -87,7 +87,7 @@ io.on('connection', function(socket) {
     //console.log(data);
     socket.broadcast.to('game').emit('serverUpdateAll', {
       name: socket.username,
-      otherId: data.userid,
+      otherId: socket.userid,
       x: data.x,
       y: data.y,
       vx: data.vx,

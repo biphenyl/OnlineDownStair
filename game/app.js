@@ -195,7 +195,7 @@ $(document).ready(function() {
   socket.on('serverCheck', function() {
     var time = new Date().getTime();  
     if (my.login == 1) {
-      if ((time - my.time) > 5000 && sentCharacters[my.id].keyState == 0) {
+      if ((time - my.time) > 10000 && sentCharacters[my.id].keyState == 0) {
         socket.emit('timeout');
         $('#room').hide();
         $('#refresh').show();
