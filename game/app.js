@@ -73,6 +73,7 @@ $(document).ready(function() {
   $('#maxPlayer').hide();
   $('#errorMsg').hide();
   $('#room').hide();
+  $('#game').hide();
   $('#output').hide();
   socket.on('connect', function() {
     //clearInterval(intervalID);
@@ -102,6 +103,7 @@ $(document).ready(function() {
     $('#login').hide();
     $('#errorMsg').hide();
     $('#room').show();
+    $('#game').show();
     $('#output').empty();
     $('#output').append(obj.newName + ' ' + obj.newId + '<br>');
     my.id = obj.newId;
@@ -198,6 +200,7 @@ $(document).ready(function() {
       if ((time - my.time) > 10000 && sentCharacters[my.id].keyState == 0) {
         socket.emit('timeout');
         $('#room').hide();
+        $('#game').hide();
         $('#refresh').show();
       } 
     }

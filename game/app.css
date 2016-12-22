@@ -2,7 +2,7 @@ body {
   background-color: #DADADA;
 }
 body > .grid {
-  height: 100%
+  height: 100%;
 }
 .image {
   margin-top: -50px;
@@ -16,6 +16,10 @@ body > .grid {
   font-size: 24px;
   text-align: center;
 }
-#room {
+#game {
   width: 100%;
+  overflow: hidden;
+  position: fixed;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
