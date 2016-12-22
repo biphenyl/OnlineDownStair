@@ -36,7 +36,7 @@ io.on('connection', function(socket) {
   var clientIp = socket.request.connection.remoteAddress;
   console.log('New connection from ' + clientIp);
   // check username
-  socket.on('check', function(name) {
+  socket.on('login', function(name) {
     var flag = 0;
     for (i = 0; i < errorList.length; i++) {
       if (name.indexOf(errorList[i]) != -1) {
@@ -46,31 +46,27 @@ io.on('connection', function(socket) {
     }
     // error
     if (name.length > 10 || name.length == 0 || flag == 1) {
-      socket.emit('serverCheck', 0);
+      socket.emit('wrong');
     }
     // correct
     if (name.length <= 10 && name.length > 0 && flag == 0) {
-      socket.emit('serverCheck', 1);
-    }
-  });
-  // login
-  socket.on('login', function(name) {
-    maxp += 1;
-    if (maxp >= MAX_PLAYER) {
-      socket.emit('maxPlayer');
-    }else {
-      var i = getID();
-      console.log(name + '[' + i + '] login');
-      socket.username = name;
-      socket.userid = i;
-      socket.emit('addMe', {
-        newId: i,
-        newName: name
-      });
-      socket.broadcast.emit('addUser', {
-        newId: i,
-        newName: name
-      });
+      maxp += 1;
+      if (maxp >= MAX_PLAYER) {
+        socket.emit('maxPlayer');
+      }else {
+        var i = getID();
+        console.log(name + '[' + i + '] login');
+        socket.username = name;
+        socket.userid = i;
+        socket.emit('addMe', {
+          newId: i,
+          newName: name
+        });
+        socket.broadcast.emit('addUser', {
+          newId: i,
+          newName: name
+        });
+      }
     }
   });
   // join the game
@@ -81,8 +77,8 @@ io.on('connection', function(socket) {
   socket.on('sendAll', function(data) {
     //console.log(data);
     socket.broadcast.to('game').emit('serverUpdateAll', {
-      name: data.name,
-      otherId: data.otherId,
+      name: socket.username,
+      otherId: data.userid,
       x: data.x,
       y: data.y,
       vx: data.vx,
@@ -97,8 +93,8 @@ io.on('connection', function(socket) {
   // new player send data to other player
   socket.on('sendState', function(data) {
     socket.broadcast.emit('serverUpdateState', {
-      id: data.id,
-      name: data.name,
+      id: socket.userid,
+      name: socket.username,
       newId: data.newId,
       x: data.x,
       y: data.y

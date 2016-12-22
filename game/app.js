@@ -78,27 +78,19 @@ $(document).ready(function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
       name = $('#username').val();
-      socket.emit('check', name);
+      socket.emit('login', name);
     });
     $('#username').keypress(function(e) {
       if (e.keyCode == 13) {
         e.preventDefault();
         name = $('#username').val();
-        socket.emit('check', name);
+        socket.emit('login', name);
       }
     });
   });
-  // check name from server
-  socket.on('serverCheck', function(flag) {
-    if (flag == 0) {
-      $('#errorMsg').show();
-    }
-    if (flag == 1) {
-      socket.emit('login', name);
-      $('#login').hide();
-      $('#errorMsg').hide();
-      $('#room').show();
-    }
+  // error username
+  socket.on('wrong', function() {
+    $('#errorMsg').show();
   });
   // max player
   socket.on('maxPlayer', function() {
@@ -107,6 +99,9 @@ $(document).ready(function() {
   // login
   socket.on('addMe', function(obj) {
     // newId, newName
+    $('#login').hide();
+    $('#errorMsg').hide();
+    $('#room').show();
     $('#output').empty();
     $('#output').append(obj.newName + ' ' + obj.newId + '<br>');
     my.id = obj.newId;
