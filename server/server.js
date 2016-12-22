@@ -33,6 +33,8 @@ function getID() {
 }
 
 io.on('connection', function(socket) {
+  var clientIp = socket.request.connection.remoteAddress;
+  console.log('New connection from ' + clientIp);
   // check username
   socket.on('check', function(name) {
     var flag = 0;
