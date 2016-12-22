@@ -35,7 +35,10 @@ function getID() {
 
 io.on('connection', function(socket) {
   var clientIp = socket.request.connection.remoteAddress;
-  var msg = 'New connection from ' + clientIp;
+  var d = new Date();
+  var date = d.toDateString();
+  var time = d.toTimeString();
+  var msg = '[' + time + ' ' + date + '] ' + 'New connection from ' + clientIp;
   fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
     if (err) throw err;
     console.log(msg);
@@ -60,7 +63,10 @@ io.on('connection', function(socket) {
         socket.emit('maxPlayer');
       }else {
         var i = getID();
-        var msg = name + '[' + i + '] login';
+        var d = new Date();
+        var date = d.toDateString();
+        var time = d.toTimeString();
+        var msg = '[' + time + ' ' + date + '] [' + clientIp + '] ' + name + '[' + i + '] login';
         fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
           if (err) throw err;
           console.log(msg);
@@ -129,7 +135,10 @@ io.on('connection', function(socket) {
     if (maxp > 0) {
       maxp -= 1;
     }
-    var msg = socket.username + '[' + socket.userid + '] logout';
+    var d = new Date();
+    var date = d.toDateString();
+    var time = d.toTimeString();
+    var msg = '[' + time + ' ' + date + '] [' + clientIp + '] ' + socket.username + '[' + socket.userid + '] logout';
     fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
       if (err) throw err;
       console.log(msg);
