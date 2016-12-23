@@ -38,7 +38,7 @@ io.on('connection', function(socket) {
   var d = new Date();
   var date = d.toDateString();
   var time = d.toTimeString();
-  var msg = '[' + time + ' ' + date + '] ' + 'New connection from ' + clientIp;
+  var msg = '[' + time + ' ' + date + '] [' + clientIp + '] New connection';
   fs.appendFile('server.log', msg + '\n', 'utf8', function(err) {
     if (err) throw err;
     console.log(msg);
