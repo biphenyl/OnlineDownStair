@@ -95,6 +95,8 @@ function character(newID, newName, posX, posY)
     //set text's center at top of player
     this.nameText = game.add.text(0, this.player.y - 16, this.name, { fontSize: '16px', fill: '#000' })
     this.nameText.x = this.player.centerX - this.nameText.width / 2;
+    this.nameText.stroke = '#FFFFFF';
+    this.nameText.strokeThickness = 4;
 
     this.hp = 10;
     this.lastHp = 10;
