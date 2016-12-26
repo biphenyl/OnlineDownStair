@@ -21,7 +21,11 @@ var MAX_TYPE = 5;
 var platformWidth = 320;
 var id = new Array(MAX_PLAYER).fill(0);
 var oldX = 0;
-var errorList = [' ', '　', '\r', '\n', '\r\n', '\u00A0'];
+var errorList = ['\t', '\u0000', '\u0009','\u0020', '\u00A0', '\u1680', '\u180E',
+                '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005',
+                '\u2006', '\u2007', '\u2008', '\u2009', '\u200A', '\u200B',
+                '\u202F', '\u205F', '\u3000', '\uFEFF', '\u000A', '\u000B',
+                '\u000C', '\u000D', '\u000D\u000A', '\u0085', '\u2028', '\u2029'];
 var maxp = 0;
 
 function getID() {
