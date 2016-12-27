@@ -179,7 +179,7 @@ function create() {
 
     //  Finally some stars to collect
     //  The score
-    scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = game.add.text(16, 48, 'Score: 0', { fontSize: '32px', fill: '#000' });
     scoreText.fixedToCamera = true;
 
     //  Our controls.
@@ -254,12 +254,30 @@ function update() {
         item.body.velocity.x = 0;
     })
 
-    if(cursors.left.isDown)
-        characters[userID].keyState = -1;
-    else if(cursors.right.isDown)
-        characters[userID].keyState = 1;
-    else if(!touchOn)
-        characters[userID].keyState = 0;
+    if(!touchOn && game.input.pointer1.isDown)
+        touchOn = true;
+
+    if(!touchOn)
+    {
+        if(cursors.left.isDown)
+            characters[userID].keyState = -1;
+        else if(cursors.right.isDown)
+            characters[userID].keyState = 1;
+        else 
+            characters[userID].keyState = 0;
+    }
+    else
+    {
+        if(game.input.pointer1.isDown)
+        {
+            if(game.input.pointer1.worldX < characters[userID].player.x)
+                characters[userID].keyState = -1;
+            else
+                characters[userID].keyState = 1;
+        }
+        else
+            characters[userID].keyState = 0;
+    }
 
     if (characters[userID].keyState == -1)
     {
@@ -445,7 +463,7 @@ function update() {
 
 function render()
 {
-
+    //game.debug.pointer(game.input.pointer1);
 }
 
 $(window).resize(function(){
