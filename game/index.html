@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">
     <title>Online DownStair</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css">
     <link rel="stylesheet" href="app.css">
@@ -49,12 +49,13 @@
         <div class='ui large message'>
           <div class='header'>Idle too long, please refresh the page</div>
         </div>
+        <div class='ui large teal button' id='refresh'>Refresh Page</div>
       </div>
     </div>
     <div class='ui center aligned grid' id='game'>
       <div id='room'>
         <div class='ui segment' id='output'></div>
-        <script type="text/javascript" src="window.js"></script>
+        <script type='text/javascript' src='window.js'></script>
       </div>
     </div>
   </body>

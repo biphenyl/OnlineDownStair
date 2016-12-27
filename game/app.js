@@ -75,6 +75,10 @@ $(document).ready(function() {
   $('#room').hide();
   $('#game').hide();
   $('#output').hide();
+  // refresh the page
+  $('#refresh').click(function() {
+    window.location.reload();
+  });
   socket.on('connect', function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
