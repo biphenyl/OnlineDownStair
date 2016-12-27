@@ -24,10 +24,26 @@ const maxHp = 10;
 
 var touchOn = false;
 var windowWidth = $(window).width();
+var windowHeight = $(window).height();
+
 var game = new Phaser.Game(windowWidth, gameHeight, Phaser.AUTO, 'room', { preload: preload, create: create, update: update , render: render});
-
+var manager = new Phaser.ScaleManager(game);
+// scale
+function myScale(manager) {
+    var r;
+    windowHeight = $(window).height();
+    if (windowHeight < gameHeight) {
+        r = windowHeight / gameHeight;
+        if (r < 0.5)
+            r = 0.5;
+    }else
+        r = 1;
+    manager.setUserScale(r, r, 0, 0);
+}
 function preload() {
-
+    game.scale.setGameSize(windowWidth / (windowHeight / gameHeight), gameHeight);
+    game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+    game.scale.setResizeCallback(myScale, manager);
     game.stage.disableVisibilityChange = true;
 
     game.load.image('sky', 'assets/background/inner.png');
@@ -117,7 +133,7 @@ function stair(x, newType)
 {   
     //console.log("new type is " + newType); 
     
-    this.platform = platforms.create(x, gameHeight, platformName[newType]);
+    this.platform = platforms.create(x, game.height, platformName[newType]);
     this.platform.scale.setTo(platformWidth/this.platform.width, platformHeight/this.platform.height);
 
     if(newType==2 || newType==3)
@@ -146,7 +162,7 @@ function create() {
     background = game.add.sprite(0, 0, 'sky');
     background.scale.setTo(gameWidth/background.width, gameHeight/background.height);
 
-    game.world.setBounds(0, 0, gameWidth, gameHeight);
+    game.world.setBounds(0, 0, gameWidth, game.height);
 
 
     graphics = game.add.graphics(0, 0);
@@ -168,8 +184,9 @@ function create() {
     userID = my.id;
     console.log("I'm " + name + " , id: " + userID);
     
+
     // setup player
-    characters[userID] = new character(userID, name, 32, game.world.height - 150);
+    characters[userID] = new character(userID, name, 32, game.world.height - game.height / 4);
     playerList[userID] = true;
 
     hpBar = game.add.sprite(characters[userID].player.x, characters[userID].player.y-26, 'hp');
@@ -413,7 +430,7 @@ function update() {
             continue;
 
         player = characters[i].player;
-        if((player.y > gameHeight) && player.alive)
+        if((player.y > game.height) && player.alive)
             playerDie(i);
         
     }
@@ -468,7 +485,14 @@ function render()
 
 $(window).resize(function(){
     windowWidth = $(window).width();
-    game.scale.setGameSize(windowWidth, gameHeight);
+    game.scale.scaleMode = null;
+    game.scale.setGameSize(windowWidth / (windowHeight / gameHeight), gameHeight);
+    game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+    game.scale.setResizeCallback(myScale, manager);
+    game.world.setBounds(0, 0, gameWidth, game.height);
+    graphics.destroy();
+    graphics = game.add.graphics(0, 0);
+    drawBound();
 });
 
 /*
@@ -571,7 +595,7 @@ function standOnPlatform(player, platform)
         }
         else if(stairType == 4)
         {
-            player.body.velocity.y = -300;
+            player.body.velocity.y = -game.height / 2;
 
             if(platformID != characters[i].status)
             {
@@ -637,7 +661,7 @@ function mainLoop()
 function drawBound()
 {
     graphics.lineStyle(5, 0x1111FF, 1);
-    graphics.drawRect(0, 0, gameWidth, gameHeight);
+    graphics.drawRect(0, 0, gameWidth, game.height);
 }
 
 /* Resurrection of player after die three second */
@@ -654,7 +678,7 @@ function reviveCount()
     {
         player.revive();
         player.x = lastPlatformX + 150;
-        player.y = 300;
+        player.y = game.height / 2;
         player.body.velocity.y = 0;
 
         game.time.events.remove(reviveEvent);
@@ -669,7 +693,7 @@ function playerDie(playerID)
 {
     // kill part
     player = characters[playerID].player;
-    player.y = gameHeight;
+    player.y = game.height;
     player.kill();
      
     console.log("player " + characters[i].name + " die~");
@@ -685,7 +709,7 @@ function playerDie(playerID)
         scoreText.text = "Score: 0";
     
     characters[playerID].player.x = lastPlatformX + 150;
-    characters[playerID].player.y = 300;
+    characters[playerID].player.y = game.height / 2;
     characters[playerID].player.body.velocity.y = 0;
 
     player.revive();
@@ -834,10 +858,10 @@ function localToSent(ltsID)
 {
     // pass characters data from game.js to shareData.js
     sentCharacters[ltsID].x = characters[ltsID].player.x;
-    sentCharacters[ltsID].y = characters[ltsID].player.y;
+    sentCharacters[ltsID].y = (characters[ltsID].player.y);
 
     sentCharacters[ltsID].vx = characters[ltsID].player.body.velocity.x;
-    sentCharacters[ltsID].vy = characters[ltsID].player.body.velocity.y;
+    sentCharacters[ltsID].vy = (characters[ltsID].player.body.velocity.y);
 
     sentCharacters[ltsID].hp = characters[ltsID].hp;
     sentCharacters[ltsID].score = characters[ltsID].score;
@@ -854,12 +878,12 @@ function sentToLocal(stlID)
     offset = 6;
     if(game.math.difference(sentCharacters[stlID].x, characters[stlID].player.x) > offset)
         characters[stlID].player.x = sentCharacters[stlID].x;
-    if(sentCharacters[stlID].vy != platformUpSpeed)
-        characters[stlID].player.y = sentCharacters[stlID].y;
+    if((sentCharacters[stlID].vy) != platformUpSpeed)
+        characters[stlID].player.y = (sentCharacters[stlID].y);
     
 
     characters[stlID].player.body.velocity.x = sentCharacters[stlID].vx;
-    characters[stlID].player.body.velocity.y = sentCharacters[stlID].vy;
+    characters[stlID].player.body.velocity.y = (sentCharacters[stlID].vy);
 
     characters[stlID].hp = sentCharacters[stlID].hp;
     characters[stlID].score = sentCharacters[stlID].score;

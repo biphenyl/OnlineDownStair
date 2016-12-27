@@ -154,7 +154,7 @@ every_c('1s').do(function() {
   io.in('game').emit('serverClean');
 });
 // sync cycle
-every_s('5s').do(function() {
+every_s('10s').do(function() {
   io.in('game').emit('serverSync');
 });
 // timeout cycle
