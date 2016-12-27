@@ -9,7 +9,8 @@ body > .grid {
   height: 100%;
 }
 .image {
-  margin-top: -50px;
+  width: 100%;
+  height: 100%;
 }
 .column {
   max-width: 450px;
