@@ -1,3 +1,4 @@
 assets/
 game/assets/
 server.log
+server/server_test.js

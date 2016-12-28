@@ -12,9 +12,9 @@ var io = require('socket.io').listen(server);
 server.listen(4395);
 
 app.get('/', function(req, res) {
-  res.sendFile('../game/' + 'index.html');
+  res.sendFile('index.html', {'root': '/home/wp2016/user/johnnylin12/git/OnlineDownStair/game'});
 });
-app.use(express.static('../game/'));
+app.use(express.static('/home/wp2016/user/johnnylin12/git/OnlineDownStair/game/'));
 var MAX_PLAYER = 20;
 var MAX_X = 1700;
 var MAX_TYPE = 5;
