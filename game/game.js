@@ -29,7 +29,7 @@ var windowHeight = $(window).height();
 var game = new Phaser.Game(windowWidth, gameHeight, Phaser.AUTO, 'room', { preload: preload, create: create, update: update , render: render});
 var manager = new Phaser.ScaleManager(game);
 // scale
-function myScale(manager) {
+function getRatio() {
     var r;
     windowHeight = $(window).height();
     if (windowHeight < gameHeight) {
@@ -38,12 +38,16 @@ function myScale(manager) {
             r = 0.5;
     }else
         r = 1;
+    return r;
+}
+function myScale(r) {
     manager.setUserScale(r, r, 0, 0);
 }
 function preload() {
-    game.scale.setGameSize(windowWidth / (windowHeight / gameHeight), gameHeight);
+    var r = getRatio();
+    game.scale.setGameSize(windowWidth / r, gameHeight);
     game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-    game.scale.setResizeCallback(myScale, manager);
+    game.scale.setResizeCallback(myScale, r);
     game.stage.disableVisibilityChange = true;
 
     game.load.image('sky', 'assets/background/inner.png');
@@ -486,9 +490,10 @@ function render()
 $(window).resize(function(){
     windowWidth = $(window).width();
     game.scale.scaleMode = null;
-    game.scale.setGameSize(windowWidth / (windowHeight / gameHeight), gameHeight);
+    var r = getRatio();
+    game.scale.setGameSize(windowWidth / r, gameHeight);
     game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-    game.scale.setResizeCallback(myScale, manager);
+    game.scale.setResizeCallback(myScale, r);
     game.world.setBounds(0, 0, gameWidth, game.height);
     graphics.destroy();
     graphics = game.add.graphics(0, 0);
