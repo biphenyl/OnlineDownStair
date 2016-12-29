@@ -272,8 +272,11 @@ function update() {
         item.body.velocity.x = 0;
     })
 
-    if(!touchOn && game.input.pointer1.isDown)
-        touchOn = true;
+    if(!touchOn)
+    {
+        if(game.input.pointer1.isDown)
+            touchOn = true;
+    }
 
     if(!touchOn)
     {
@@ -286,9 +289,15 @@ function update() {
     }
     else
     {
-        if(game.input.pointer1.isDown)
+        var nowPointer;
+        if(!game.input.pointer1.isDown && game.input.pointer2.isDown)
+            now_pointer = game.input.pointer2;
+        else
+            now_pointer = game.input.pointer1;
+
+        if(now_pointer.isDown)
         {
-            if(game.input.pointer1.worldX < characters[userID].player.x)
+            if(now_pointer.worldX < characters[userID].player.x)
                 characters[userID].keyState = -1;
             else
                 characters[userID].keyState = 1;
