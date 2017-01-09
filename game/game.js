@@ -65,12 +65,12 @@ function preload() {
 }
 
 var userID;
-var playerCount = 20;
+var playerCount = 50;
 
 // characters is our array store our data(hp, score...etc), players is a phaser group that do physic thing
-var characters = new Array(20);
+var characters = new Array(50);
 var players;
-var localPlayerList = new Array(20).fill(false);
+var localPlayerList = new Array(50).fill(false);
 
 
 // stairs is our array store our data(type), platforms is a phaser group that do physic thing
@@ -187,7 +187,7 @@ function create() {
     
 
     // setup player
-    characters[userID] = new character(userID, name, 32, game.world.height - game.height / 4);
+    characters[userID] = new character(userID, name, newPlatform.x + (platformWidth / 5), game.world.height - game.height / 4);
     playerList[userID] = true;
 
     hpBar = game.add.sprite(characters[userID].player.x, characters[userID].player.y-26, 'hp');
@@ -218,7 +218,7 @@ function create() {
     lastKeyStatus = 0;
     drawBound();
 
-    for(i=0; i<20; i++)
+    for(i=0; i<MAX_PLAYER; i++)
     {
         if(playerList[i]==true && localPlayerList[i]==false)
             playerJoin(i);
@@ -717,9 +717,9 @@ function playerDie(playerID)
 
 function playerJoin(newPlayerID)
 {
-    if(playerCount > 20)
+    if(playerCount > MAX_PLAYER)
     {
-        // if player number is over 20, refuse it
+        // if player number is over MAX_PLAYER, refuse it
         return;
     }
 

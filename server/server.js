@@ -15,7 +15,7 @@ app.get('/', function(req, res) {
   res.sendFile('index.html', {'root': '/home/wp2016/user/johnnylin12/git/OnlineDownStair/game'});
 });
 app.use(express.static('/home/wp2016/user/johnnylin12/git/OnlineDownStair/game/'));
-var MAX_PLAYER = 20;
+var MAX_PLAYER = 50;
 var MAX_X = 1700;
 var MAX_TYPE = 5;
 var platformWidth = 320;
@@ -47,6 +47,8 @@ io.on('connection', function(socket) {
     if (err) throw err;
     console.log(msg);
   });
+  // send number of players
+  socket.emit('number', maxp);
   // check username
   socket.on('login', function(name) {
     var flag = 0;
@@ -63,6 +65,7 @@ io.on('connection', function(socket) {
     // correct
     if (name.length <= 10 && name.length > 0 && flag == 0) {
       maxp += 1;
+      console.log(maxp);
       if (maxp >= MAX_PLAYER) {
         socket.emit('maxPlayer');
       }else {

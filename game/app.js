@@ -2,7 +2,7 @@ var socket = io.connect('http://luffy.ee.ncku.edu.tw:4395', {
   'force new connection': true
 });
 var intervalID;
-var MAX_PLAYER = 20;
+const MAX_PLAYER = 50;
 
 var my = {
   id: -1,
@@ -79,6 +79,7 @@ $(document).ready(function() {
   $('#refresh').click(function() {
     window.location.reload();
   });
+  // connect to server
   socket.on('connect', function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
@@ -92,6 +93,11 @@ $(document).ready(function() {
         socket.emit('login', name);
       }
     });
+  });
+  // number of players
+  socket.on('number', function(num) {
+    $('#number').empty();
+    $('#number').append('Players: ' + num + ' / ' + MAX_PLAYER);
   });
   // error username
   socket.on('wrong', function() {

@@ -1,7 +1,7 @@
 
-var playerList = new Array(20).fill(false);
+var playerList = new Array(50).fill(false);
 
-var sentCharacters = new Array(20);
+var sentCharacters = new Array(50);
 
 var sentPlatforms = new Array();
 
