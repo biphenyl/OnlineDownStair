@@ -1,9 +1,5 @@
 $(document).ready(function(){
-/*
-document.addEventListener('touchstart', onTouchStart, false);
-//document.addEventListener('touchmove', onTouchMove, false);
-document.addEventListener('touchend', onTouchEnd, false);
-*/
+
 const gameWidth = 2000;
 const gameHeight = 600;
 
@@ -43,6 +39,7 @@ function myScale() {
     console.log('changing canvas size');
 }
 function preload() {
+
     game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
     game.scale.setResizeCallback(myScale);
     game.stage.disableVisibilityChange = true;
@@ -58,6 +55,14 @@ function preload() {
 
     game.load.spritesheet('dude1', 'assets/guys/guy1.png', 32, 48);
     game.load.spritesheet('dude2', 'assets/guys/guy2.png', 32, 48);
+    game.load.spritesheet('dude3', 'assets/guys/guy3.png', 32, 48);
+    game.load.spritesheet('dude4', 'assets/guys/guy4.png', 32, 48);
+    game.load.spritesheet('dude5', 'assets/guys/guy5.png', 32, 48);
+    game.load.spritesheet('dude6', 'assets/guys/guy6.png', 32, 48);
+    game.load.spritesheet('dude7', 'assets/guys/guy7.png', 32, 48);
+    game.load.spritesheet('dude8', 'assets/guys/guy8.png', 32, 48);
+    game.load.spritesheet('dude9', 'assets/guys/guy9.png', 32, 48);
+    game.load.spritesheet('dude10', 'assets/guys/guy10.png', 32, 48);
 
     game.load.spritesheet('hp', 'assets/HP/hpBar2.png', 32, 10);
 
@@ -91,6 +96,7 @@ var lastPlatformX = 0;
 var reviveCounter = -1;
 var reviveEvent;
 var lastKeyStatus;
+var guyName = ["dude1", "dude2", "dude3", "dude4", "dude5", "dude6", "dude7", "dude8", "dude9", "dude10"];
 
 var hpBar;
 
@@ -103,10 +109,7 @@ function character(newID, newName, posX, posY)
     this.id = newID;
     this.name = newName;
 
-    if(this.id%2 == 0)    
-        this.player = players.create(posX, posY, 'dude1');
-    else
-        this.player = players.create(posX, posY, 'dude2');
+    this.player = players.create(posX, posY, guyName[newID % 10]);
     initPlayer(this.player);
 
     //set text's center at top of player
@@ -125,6 +128,7 @@ function character(newID, newName, posX, posY)
 
     // status of character, -1 as flying(not on platform), and postive number is which platform this character stand on
     this.spikeState = 0;
+    this.onPlatform = false;
     this.status = 0;
     this.keyState = 0;
     this.uuid = 0;
@@ -174,11 +178,11 @@ function create() {
     platforms.enableBody = true;
 
     createFirstMap();
+
     /* PLAYER */
     players = game.add.group();
 
     // there should be an inputed name
-
     name = my.name;
     
     // wait sever give it an id and game info (if not the first player)
@@ -194,9 +198,6 @@ function create() {
     hpBar.frame = maxHp - 1;
 
     localPlayerList[userID] = true;
-
-    //  Finally some stars to collect
-    //  The score
     scoreText = game.add.text(16, 48, 'Score: 0', { fontSize: '32px', fill: '#000' });
     scoreText.fixedToCamera = true;
 
@@ -208,10 +209,7 @@ function create() {
         item.body.velocity.y = platformUpSpeed;
     })
 
-    //game.time.events.loop(Phaser.Timer.SECOND * 1, createNewPlatform, this);
     game.time.events.loop(Phaser.Timer.SECOND * 0.03, mainLoop, this);
-
-    //game.time.events.loop(Phaser.Timer.SECOND * 5, playerJoin, this);
 
     game.camera.follow(characters[userID].player, Phaser.Camera.FOLLOW_LOCKON, 0.05, 0.1);
 
@@ -321,9 +319,9 @@ function update() {
     else if(characters[userID].keyState == 0)
     {
         //  Stand still
-        characters[userID].player.animations.stop();
-        characters[userID].player.frame = 4;
+        characters[userID].player.body.velocity.x = 0;
     }
+    
     for(i=0; i<playerCount; i++)
     {
         if(localPlayerList[i]==false || i==userID)
@@ -332,20 +330,23 @@ function update() {
         characters[i].player.body.velocity.x = characters[i].keyState * playerSpeedX;
     }
 
-    platforms.forEach(function(item){
-        if(item.top > playerHeight)
-        {
-            for(i=0; i<playerCount; ++i)
-            {
-                if(localPlayerList[i] == false)
-                    continue;
+    
+    for(i=0; i<playerCount; ++i)
+    {
+        if(localPlayerList[i] == false)
+            continue;
 
+        characters[i].onPlatform = false;
+        platforms.forEach(function(item)
+        {
+            if(item.top > playerHeight)
+            {
                 //console.log("I count to " + i);
                 counter = i;
                 game.physics.arcade.collide(characters[i].player, item, standOnPlatform, null, this);
             }
-        }
-    })
+        });
+    }
 
     for(i=0; i<playerCount; ++i)
     {
@@ -456,8 +457,13 @@ function update() {
             characters[i].player.animations.play("left");
         else if(characters[i].keyState == 0)
         {
-            characters[i].player.animations.stop();
-            characters[i].player.frame = 4;
+            if(characters[i].onPlatform)
+            {
+                characters[i].player.animations.stop();
+                characters[i].player.frame = 4;
+            }
+            else
+                characters[i].player.animations.play("flying");
         }
 
     }
@@ -532,13 +538,12 @@ function standOnPlatform(player, platform)
         {
             characters[userID].score += 1;
             scoreText.text = "Score: " + characters[userID].score;
-            console.log("player bottom is " + player.bottom + " , platform top is " + platform.top);
         }
 
         
         if(stairType == 0)
         {
-            if(platformID != characters[i].status)
+            if(platformID != characters[counter].status)
             {
                 characters[counter].hp += 3;
                 if(characters[counter].hp > 10)
@@ -547,7 +552,7 @@ function standOnPlatform(player, platform)
         }
         else if(stairType == 1)
         {
-            if(platformID != characters[i].status)
+            if(platformID != characters[counter].status)
             {
                 characters[counter].hp -= 3;
                 if(characters[counter].hp <= 0 && characters[i].player.alive)
@@ -566,7 +571,7 @@ function standOnPlatform(player, platform)
             */
             characters[counter].player.body.velocity.x -= 100;
 
-            if(platformID != characters[i].status)
+            if(platformID != characters[counter].status)
             {
                 if(characters[counter].hp+1 <= 10)
                     characters[counter].hp++;
@@ -584,7 +589,7 @@ function standOnPlatform(player, platform)
             */
             characters[counter].player.body.velocity.x += 100;
 
-            if(platformID != characters[i].status)
+            if(platformID != characters[counter].status)
             {
                 if(characters[counter].hp+1 < 10)
                     characters[counter].hp++;
@@ -594,14 +599,16 @@ function standOnPlatform(player, platform)
         {
             player.body.velocity.y = -game.height / 2;
 
-            if(platformID != characters[i].status)
+            if(platformID != characters[counter].status)
             {
                 if(characters[counter].hp < 10)
                     characters[counter].hp++;
             }
         }
 
+
         characters[counter].status = platformID;
+        characters[counter].onPlatform = true;
     }
 }
 
@@ -719,7 +726,7 @@ function playerJoin(newPlayerID)
 {
     if(playerCount > MAX_PLAYER)
     {
-        // if player number is over MAX_PLAYER, refuse it
+        // if player number is over 20, refuse it
         return;
     }
 
@@ -756,6 +763,7 @@ function initPlayer(player)
 
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
+    player.animations.add('flying', [9, 10, 11], 10, true);
 }
 
 function initPlatform(platform)
