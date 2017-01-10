@@ -84,20 +84,23 @@ $(document).ready(function() {
     //clearInterval(intervalID);
     $('#sendid').click(function() {
       name = $('#username').val();
-      socket.emit('login', name);
+      room = $('#room_select option:selected').val();
+      socket.emit('login', {name: name, room: room});
     });
     $('#username').keypress(function(e) {
       if (e.keyCode == 13) {
         e.preventDefault();
         name = $('#username').val();
-        socket.emit('login', name);
+        room = $('#room_select option:selected').val();
+        socket.emit('login', {name: name, room: room});
       }
     });
   });
   // number of players
   socket.on('number', function(num) {
     $('#number').empty();
-    $('#number').append('Players: ' + num + ' / ' + MAX_PLAYER);
+    $('#number').append('Room1 Players: ' + num[0] + ' / ' + MAX_PLAYER + '<br>');
+    $('#number').append('Room2 Players: ' + num[1] + ' / ' + MAX_PLAYER);
   });
   // error username
   socket.on('wrong', function() {
@@ -127,7 +130,7 @@ $(document).ready(function() {
     my.login = 1;
     var time = new Date().getTime();
     my.time = time;
-    socket.emit('room');
+    //socket.emit('room');
   });
   // add other user
   socket.on('addUser', function(obj) {

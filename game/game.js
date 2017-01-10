@@ -65,12 +65,12 @@ function preload() {
 }
 
 var userID;
-var playerCount = 50;
+var playerCount = MAX_PLAYER;
 
 // characters is our array store our data(hp, score...etc), players is a phaser group that do physic thing
-var characters = new Array(50);
+var characters = new Array(MAX_PLAYER);
 var players;
-var localPlayerList = new Array(50).fill(false);
+var localPlayerList = new Array(MAX_PLAYER).fill(false);
 
 
 // stairs is our array store our data(type), platforms is a phaser group that do physic thing
@@ -187,7 +187,7 @@ function create() {
     
 
     // setup player
-    characters[userID] = new character(userID, name, newPlatform.x + (platformWidth / 5), game.world.height - game.height / 4);
+    characters[userID] = new character(userID, name, 32, game.world.height - game.height / 4);
     playerList[userID] = true;
 
     hpBar = game.add.sprite(characters[userID].player.x, characters[userID].player.y-26, 'hp');
